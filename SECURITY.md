@@ -28,8 +28,14 @@ Gladys before reporting a problem.
 
 ## Scope
 
-In scope: the code of this repository and the Docker image it publishes.
+In scope: the code of this repository and the Docker image it publishes. The
+integration stores the API key of the account in the Gladys configuration
+(never in `/data`, never in the logs) and sends it only to the server
+configured, in an HTTP Basic header: use HTTPS for a server reached over the
+internet. `/data/wakapi-state.json` holds the account id, the day of the last
+reading and whether its scene events were sent. The integration only reads
+the server; it opens no port.
 
 Out of scope: Gladys Assistant itself (see its
 [security policy](https://github.com/GladysAssistant/Gladys/security/policy)),
-and the third-party services and devices the integration talks to.
+Wakapi and WakaTime.
