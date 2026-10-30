@@ -1,177 +1,523 @@
 {
   "manifest_version": 1,
   "type": "device",
-  "name": "Demo Devices Template",
+  "name": "Wakapi",
   "description": {
-    "en": "Starter template showing sensors, a switch, a dimmable light and a smart plug.",
-    "fr": "Template de démarrage : capteurs, interrupteur, lampe variable et prise connectée."
+    "en": "Your coding time from Wakapi or WakaTime: today, this week, daily goal, projects.",
+    "fr": "Votre temps de code Wakapi ou WakaTime : aujourd'hui, la semaine, objectif du jour, projets.",
+    "de": "Deine Programmierzeit aus Wakapi oder WakaTime: heute, diese Woche, Tagesziel, Projekte.",
+    "es": "Su tiempo de código de Wakapi o WakaTime: hoy, esta semana, objetivo diario, proyectos."
   },
   "version": "1.0.0",
-  "docker_image": "ghcr.io/gladysassistant/integration-template-js:1.0.0",
+  "docker_image": "ghcr.io/guim31/gladys-wakapi:1.0.0",
   "gladys_version": ">=5.1.0",
-  "cover_image": "https://raw.githubusercontent.com/GladysAssistant/integration-template-js/master/cover.png",
-  "categories": ["lighting", "security", "environment"],
+  "cover_image": "https://raw.githubusercontent.com/guim31/gladys-wakapi/main/cover.png",
+  "categories": ["services"],
   "transports": ["local", "cloud"],
   "config_schema": [
     {
       "key": "intro",
       "type": "section",
-      "label": { "en": "Getting started", "fr": "Pour commencer" },
+      "label": {
+        "en": "Your account",
+        "fr": "Votre compte",
+        "de": "Dein Konto",
+        "es": "Su cuenta"
+      },
       "description": {
-        "en": "The demo weather station reads real data from the free Open-Meteo API: pick the coordinates to observe. No account, no API key.",
-        "fr": "La station météo de démonstration lit de vraies données via l'API gratuite Open-Meteo : choisissez les coordonnées à observer. Pas de compte, pas de clé d'API."
+        "en": "Wakapi (self-hosted or wakapi.dev) or WakaTime: enter the server address and the API key shown in the settings of your account.",
+        "fr": "Wakapi (auto-hébergé ou wakapi.dev) ou WakaTime : saisissez l'adresse du serveur et la clé d'API affichée dans les paramètres de votre compte.",
+        "de": "Wakapi (selbst gehostet oder wakapi.dev) oder WakaTime: Gib die Serveradresse und den API-Schlüssel aus deinen Kontoeinstellungen ein.",
+        "es": "Wakapi (autoalojado o wakapi.dev) o WakaTime: introduzca la dirección del servidor y la clave de API que aparece en los ajustes de su cuenta."
       },
       "links": [
         {
-          "url": "https://open-meteo.com/en/docs",
-          "label": { "en": "Open-Meteo documentation", "fr": "Documentation Open-Meteo" }
+          "url": "https://github.com/muety/wakapi",
+          "label": {
+            "en": "About Wakapi",
+            "fr": "À propos de Wakapi",
+            "de": "Über Wakapi",
+            "es": "Acerca de Wakapi"
+          }
+        },
+        {
+          "url": "https://wakatime.com/settings/api-key",
+          "label": {
+            "en": "WakaTime API key",
+            "fr": "Clé d'API WakaTime",
+            "de": "WakaTime-API-Schlüssel",
+            "es": "Clave de API de WakaTime"
+          }
         }
       ]
     },
     {
-      "key": "latitude",
-      "type": "number",
-      "label": { "en": "Latitude", "fr": "Latitude" },
-      "description": {
-        "en": "Latitude used for the demo weather sensor.",
-        "fr": "Latitude utilisée par le capteur météo de démonstration."
+      "key": "url",
+      "type": "string",
+      "label": {
+        "en": "Server address",
+        "fr": "Adresse du serveur",
+        "de": "Serveradresse",
+        "es": "Dirección del servidor"
       },
-      "placeholder": { "en": "e.g. 48.8566", "fr": "ex. 48.8566" },
-      "required": true,
-      "default": 48.8566,
-      "min": -90,
-      "max": 90
+      "description": {
+        "en": "Address of your Wakapi server, wakapi.dev, or wakatime.com.",
+        "fr": "Adresse de votre serveur Wakapi, wakapi.dev, ou wakatime.com.",
+        "de": "Adresse deines Wakapi-Servers, wakapi.dev oder wakatime.com.",
+        "es": "Dirección de su servidor Wakapi, wakapi.dev o wakatime.com."
+      },
+      "placeholder": {
+        "en": "e.g. http://192.168.1.20:3000",
+        "fr": "ex. http://192.168.1.20:3000",
+        "de": "z. B. http://192.168.1.20:3000",
+        "es": "p. ej. http://192.168.1.20:3000"
+      },
+      "required": true
     },
     {
-      "key": "longitude",
-      "type": "number",
-      "label": { "en": "Longitude", "fr": "Longitude" },
-      "description": {
-        "en": "Longitude used for the demo weather sensor.",
-        "fr": "Longitude utilisée par le capteur météo de démonstration."
+      "key": "api_key",
+      "type": "secret",
+      "label": {
+        "en": "API key",
+        "fr": "Clé d'API",
+        "de": "API-Schlüssel",
+        "es": "Clave de API"
       },
-      "placeholder": { "en": "e.g. 2.3522", "fr": "ex. 2.3522" },
-      "required": true,
-      "default": 2.3522,
-      "min": -180,
-      "max": 180
+      "description": {
+        "en": "Wakapi: Settings → API key. WakaTime: Settings → API key.",
+        "fr": "Wakapi : Settings → API key. WakaTime : Settings → API key.",
+        "de": "Wakapi: Settings → API key. WakaTime: Settings → API key.",
+        "es": "Wakapi: Settings → API key. WakaTime: Settings → API key."
+      },
+      "required": true
     },
     {
-      "key": "unit",
-      "type": "select",
-      "label": { "en": "Temperature unit", "fr": "Unité de température" },
+      "key": "allow_self_signed",
+      "type": "boolean",
+      "label": {
+        "en": "Accept a self-signed certificate",
+        "fr": "Accepter un certificat auto-signé",
+        "de": "Selbstsigniertes Zertifikat akzeptieren",
+        "es": "Aceptar un certificado autofirmado"
+      },
+      "description": {
+        "en": "Only for a Wakapi served in HTTPS with its own certificate.",
+        "fr": "Seulement pour un Wakapi servi en HTTPS avec son propre certificat.",
+        "de": "Nur für ein Wakapi, das per HTTPS mit eigenem Zertifikat läuft.",
+        "es": "Solo para un Wakapi servido en HTTPS con su propio certificado."
+      },
       "required": false,
-      "default": "celsius",
+      "default": false
+    },
+    {
+      "key": "options",
+      "type": "section",
+      "label": {
+        "en": "Options",
+        "fr": "Options",
+        "de": "Optionen",
+        "es": "Opciones"
+      }
+    },
+    {
+      "key": "daily_goal",
+      "type": "number",
+      "label": {
+        "en": "Daily goal (minutes)",
+        "fr": "Objectif du jour (minutes)",
+        "de": "Tagesziel (Minuten)",
+        "es": "Objetivo diario (minutos)"
+      },
+      "description": {
+        "en": "Coding time that fires the \"Daily coding goal reached\" trigger.",
+        "fr": "Temps de code qui déclenche « Objectif de code du jour atteint ».",
+        "de": "Programmierzeit, die „Tägliches Programmierziel erreicht“ auslöst.",
+        "es": "Tiempo de código que activa «Objetivo diario de código alcanzado»."
+      },
+      "placeholder": {
+        "en": "e.g. 120",
+        "fr": "ex. 120",
+        "de": "z. B. 120",
+        "es": "p. ej. 120"
+      },
+      "required": false,
+      "default": 120,
+      "min": 1,
+      "max": 1440
+    },
+    {
+      "key": "poll_interval",
+      "type": "select",
+      "label": {
+        "en": "Refresh interval",
+        "fr": "Intervalle de rafraîchissement",
+        "de": "Aktualisierungsintervall",
+        "es": "Intervalo de actualización"
+      },
+      "required": false,
+      "default": "300",
       "options": [
-        { "value": "celsius", "label": { "en": "Celsius", "fr": "Celsius" } },
-        { "value": "fahrenheit", "label": { "en": "Fahrenheit", "fr": "Fahrenheit" } }
+        {
+          "value": "300",
+          "label": {
+            "en": "5 minutes",
+            "fr": "5 minutes",
+            "de": "5 Minuten",
+            "es": "5 minutos"
+          }
+        },
+        {
+          "value": "600",
+          "label": {
+            "en": "10 minutes",
+            "fr": "10 minutes",
+            "de": "10 Minuten",
+            "es": "10 minutos"
+          }
+        },
+        {
+          "value": "900",
+          "label": {
+            "en": "15 minutes",
+            "fr": "15 minutes",
+            "de": "15 Minuten",
+            "es": "15 minutos"
+          }
+        },
+        {
+          "value": "1800",
+          "label": {
+            "en": "30 minutes",
+            "fr": "30 minutes",
+            "de": "30 Minuten",
+            "es": "30 minutos"
+          }
+        }
       ]
     },
     {
-      "key": "poll_frequency",
-      "type": "number",
-      "label": { "en": "Refresh interval (s)", "fr": "Intervalle de rafraîchissement (s)" },
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the texts",
+        "fr": "Langue des textes",
+        "de": "Sprache der Texte",
+        "es": "Idioma de los textos"
+      },
       "description": {
-        "en": "How often sensors are polled, in seconds (one minute minimum).",
-        "fr": "Fréquence d'interrogation des capteurs, en secondes (une minute minimum)."
+        "en": "Language of the feature names (set when the device is added) and of the messages.",
+        "fr": "Langue des noms de fonctionnalités (fixés à l'ajout de l'appareil) et des messages.",
+        "de": "Sprache der Funktionsnamen (beim Hinzufügen des Geräts festgelegt) und der Meldungen.",
+        "es": "Idioma de los nombres de las funciones (fijados al añadir el dispositivo) y de los mensajes."
       },
       "required": false,
-      "default": 300,
-      "min": 60,
-      "max": 3600
+      "default": "fr",
+      "options": [
+        {
+          "value": "en",
+          "label": {
+            "en": "English",
+            "fr": "Anglais",
+            "de": "Englisch",
+            "es": "Inglés"
+          }
+        },
+        {
+          "value": "fr",
+          "label": {
+            "en": "French",
+            "fr": "Français",
+            "de": "Französisch",
+            "es": "Francés"
+          }
+        },
+        {
+          "value": "de",
+          "label": {
+            "en": "German",
+            "fr": "Allemand",
+            "de": "Deutsch",
+            "es": "Alemán"
+          }
+        },
+        {
+          "value": "es",
+          "label": {
+            "en": "Spanish",
+            "fr": "Espagnol",
+            "de": "Spanisch",
+            "es": "Español"
+          }
+        }
+      ]
     }
   ],
   "actions": [
     {
-      "key": "test_weather",
-      "label": { "en": "Test the weather provider", "fr": "Tester le fournisseur météo" },
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "Reads the server now and reports what it finds.",
+        "fr": "Lit le serveur maintenant et indique ce qu'il trouve.",
+        "de": "Liest den Server sofort und meldet, was er findet.",
+        "es": "Lee el servidor ahora e indica lo que encuentra."
+      },
       "timeout_seconds": 30
-    },
-    {
-      "key": "identify",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ]
     }
   ],
   "scene_triggers": [
     {
-      "key": "motion_detected",
-      "label": { "en": "Motion detected", "fr": "Mouvement détecté" },
-      "description": {
-        "en": "A demo motion sensor saw a person or an animal move.",
-        "fr": "Un détecteur de démonstration a vu bouger une personne ou un animal."
+      "key": "first_activity",
+      "label": {
+        "en": "First coding of the day",
+        "fr": "Premier code de la journée",
+        "de": "Erste Programmierzeit des Tages",
+        "es": "Primer código del día"
       },
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Sensor", "fr": "Détecteur" }
-        },
-        {
-          "key": "target",
-          "type": "multi_select",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" },
-          "options": [
-            { "value": "person", "label": { "en": "Person", "fr": "Personne" } },
-            { "value": "animal", "label": { "en": "Animal", "fr": "Animal" } }
-          ]
-        }
-      ],
+      "description": {
+        "en": "The first coding time of the day appears on the account.",
+        "fr": "Le premier temps de code de la journée apparaît sur le compte.",
+        "de": "Die erste Programmierzeit des Tages erscheint im Konto.",
+        "es": "Aparece el primer tiempo de código del día en la cuenta."
+      },
       "variables": [
         {
-          "key": "target",
+          "key": "project",
           "type": "string",
-          "label": { "en": "What moved", "fr": "Ce qui a bougé" }
+          "label": {
+            "en": "Project",
+            "fr": "Projet",
+            "de": "Projekt",
+            "es": "Proyecto"
+          }
+        },
+        {
+          "key": "language",
+          "type": "string",
+          "label": {
+            "en": "Language",
+            "fr": "Langage",
+            "de": "Sprache",
+            "es": "Lenguaje"
+          }
+        },
+        {
+          "key": "minutes",
+          "type": "number",
+          "label": {
+            "en": "Minutes today",
+            "fr": "Minutes aujourd'hui",
+            "de": "Minuten heute",
+            "es": "Minutos hoy"
+          }
+        }
+      ]
+    },
+    {
+      "key": "daily_goal_reached",
+      "label": {
+        "en": "Daily coding goal reached",
+        "fr": "Objectif de code du jour atteint",
+        "de": "Tägliches Programmierziel erreicht",
+        "es": "Objetivo diario de código alcanzado"
+      },
+      "description": {
+        "en": "Today's coding time reached the daily goal set in the configuration.",
+        "fr": "Le temps de code du jour a atteint l'objectif réglé dans la configuration.",
+        "de": "Die heutige Programmierzeit hat das in der Konfiguration eingestellte Tagesziel erreicht.",
+        "es": "El tiempo de código de hoy ha alcanzado el objetivo fijado en la configuración."
+      },
+      "variables": [
+        {
+          "key": "minutes",
+          "type": "number",
+          "label": {
+            "en": "Minutes today",
+            "fr": "Minutes aujourd'hui",
+            "de": "Minuten heute",
+            "es": "Minutos hoy"
+          }
+        },
+        {
+          "key": "goal",
+          "type": "number",
+          "label": {
+            "en": "Goal (minutes)",
+            "fr": "Objectif (minutes)",
+            "de": "Ziel (Minuten)",
+            "es": "Objetivo (minutos)"
+          }
+        },
+        {
+          "key": "project",
+          "type": "string",
+          "label": {
+            "en": "Main project",
+            "fr": "Projet principal",
+            "de": "Hauptprojekt",
+            "es": "Proyecto principal"
+          }
+        },
+        {
+          "key": "language",
+          "type": "string",
+          "label": {
+            "en": "Main language",
+            "fr": "Langage principal",
+            "de": "Hauptsprache",
+            "es": "Lenguaje principal"
+          }
         }
       ]
     }
   ],
   "scene_actions": [
     {
-      "key": "identify_device",
-      "label": { "en": "Identify a device", "fr": "Identifier un appareil" },
-      "description": {
-        "en": "Make a device signal itself (the demo light blinks).",
-        "fr": "Fait se signaler un appareil (la lampe de démonstration clignote)."
+      "key": "read_today",
+      "label": {
+        "en": "Read today's coding time",
+        "fr": "Lire le temps de code du jour",
+        "de": "Heutige Programmierzeit lesen",
+        "es": "Leer el tiempo de código de hoy"
       },
-      "timeout_seconds": 15,
-      "fields": [
-        {
-          "key": "device",
-          "type": "select",
-          "source": "devices",
-          "label": { "en": "Device", "fr": "Appareil" },
-          "required": true
-        }
-      ],
+      "description": {
+        "en": "Today's coding time and the week as a sentence, for a message or a voice announcement.",
+        "fr": "Le temps de code du jour et de la semaine en une phrase, pour un message ou une annonce vocale.",
+        "de": "Die heutige Programmierzeit und die Woche als Satz, für eine Nachricht oder eine Sprachansage.",
+        "es": "El tiempo de código de hoy y de la semana en una frase, para un mensaje o un anuncio de voz."
+      },
+      "timeout_seconds": 30,
       "outputs": [
         {
-          "key": "signalled",
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Sentence",
+            "fr": "Phrase",
+            "de": "Satz",
+            "es": "Frase"
+          }
+        },
+        {
+          "key": "minutes_today",
+          "type": "number",
+          "label": {
+            "en": "Minutes today",
+            "fr": "Minutes aujourd'hui",
+            "de": "Minuten heute",
+            "es": "Minutos hoy"
+          }
+        },
+        {
+          "key": "minutes_week",
+          "type": "number",
+          "label": {
+            "en": "Minutes this week",
+            "fr": "Minutes cette semaine",
+            "de": "Minuten diese Woche",
+            "es": "Minutos esta semana"
+          }
+        },
+        {
+          "key": "goal_reached",
           "type": "boolean",
-          "label": { "en": "Device signalled", "fr": "Appareil signalé" }
+          "label": {
+            "en": "Goal reached",
+            "fr": "Objectif atteint",
+            "de": "Ziel erreicht",
+            "es": "Objetivo alcanzado"
+          }
+        },
+        {
+          "key": "project",
+          "type": "string",
+          "label": {
+            "en": "Main project",
+            "fr": "Projet principal",
+            "de": "Hauptprojekt",
+            "es": "Proyecto principal"
+          }
+        },
+        {
+          "key": "language",
+          "type": "string",
+          "label": {
+            "en": "Main language",
+            "fr": "Langage principal",
+            "de": "Hauptsprache",
+            "es": "Lenguaje principal"
+          }
         }
       ]
     }
   ],
   "widgets": [
     {
-      "key": "demo_status",
-      "label": { "en": "Demo status", "fr": "État de la démo" },
-      "description": {
-        "en": "Live temperature and plug power, plug connection and observed location.",
-        "fr": "Température et puissance en direct, connexion de la prise, position observée."
+      "key": "coding_time",
+      "label": {
+        "en": "Coding time",
+        "fr": "Temps de code",
+        "de": "Programmierzeit",
+        "es": "Tiempo de código"
       },
-      "icon": "activity",
-      "action_timeout_seconds": 15
+      "description": {
+        "en": "Today, this week, the daily goal, the last 7 days and today's projects.",
+        "fr": "Aujourd'hui, la semaine, l'objectif du jour, les 7 derniers jours et les projets du jour.",
+        "de": "Heute, diese Woche, das Tagesziel, die letzten 7 Tage und die heutigen Projekte.",
+        "es": "Hoy, esta semana, el objetivo diario, los últimos 7 días y los proyectos de hoy."
+      },
+      "icon": "code",
+      "settings": [
+        {
+          "key": "show_week",
+          "type": "boolean",
+          "label": {
+            "en": "Show this week",
+            "fr": "Afficher la semaine",
+            "de": "Diese Woche anzeigen",
+            "es": "Mostrar esta semana"
+          },
+          "default": true
+        },
+        {
+          "key": "show_goal",
+          "type": "boolean",
+          "label": {
+            "en": "Show the daily goal",
+            "fr": "Afficher l'objectif du jour",
+            "de": "Tagesziel anzeigen",
+            "es": "Mostrar el objetivo diario"
+          },
+          "default": true
+        },
+        {
+          "key": "show_chart",
+          "type": "boolean",
+          "label": {
+            "en": "Show the last 7 days",
+            "fr": "Afficher les 7 derniers jours",
+            "de": "Letzte 7 Tage anzeigen",
+            "es": "Mostrar los últimos 7 días"
+          },
+          "default": true
+        },
+        {
+          "key": "show_projects",
+          "type": "boolean",
+          "label": {
+            "en": "Show today's projects",
+            "fr": "Afficher les projets du jour",
+            "de": "Heutige Projekte anzeigen",
+            "es": "Mostrar los proyectos de hoy"
+          },
+          "default": true
+        }
+      ]
     }
   ]
 }

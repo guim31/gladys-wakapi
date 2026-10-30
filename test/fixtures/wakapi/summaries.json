@@ -1,0 +1,486 @@
+{
+  "data": [
+    {
+      "categories": [],
+      "dependencies": [],
+      "editors": [],
+      "languages": [],
+      "machines": [],
+      "operating_systems": [],
+      "projects": [],
+      "grand_total": {
+        "digital": "0:0",
+        "hours": 0,
+        "minutes": 0,
+        "text": "0 hrs 0 mins",
+        "total_seconds": 0
+      },
+      "range": {
+        "date": "2026-10-30T06:52:15Z",
+        "end": "2026-10-24T23:59:59+02:00",
+        "start": "2026-10-24T00:00:00+02:00",
+        "text": "",
+        "timezone": "UTC"
+      }
+    },
+    {
+      "categories": [
+        {
+          "digital": "0:49:30",
+          "hours": 0,
+          "minutes": 49,
+          "name": "coding",
+          "percent": 100,
+          "seconds": 30,
+          "text": "0 hrs 50 mins",
+          "total_seconds": 2970
+        }
+      ],
+      "dependencies": [],
+      "editors": [
+        {
+          "digital": "0:49:30",
+          "hours": 0,
+          "minutes": 49,
+          "name": "Vscode",
+          "percent": 100,
+          "seconds": 30,
+          "text": "0 hrs 50 mins",
+          "total_seconds": 2970
+        }
+      ],
+      "languages": [
+        {
+          "digital": "0:49:30",
+          "hours": 0,
+          "minutes": 49,
+          "name": "Markdown",
+          "percent": 100,
+          "seconds": 30,
+          "text": "0 hrs 50 mins",
+          "total_seconds": 2970
+        }
+      ],
+      "machines": [
+        {
+          "digital": "0:49:30",
+          "hours": 0,
+          "minutes": 49,
+          "name": "unknown",
+          "percent": 100,
+          "seconds": 30,
+          "text": "0 hrs 50 mins",
+          "total_seconds": 2970
+        }
+      ],
+      "operating_systems": [
+        {
+          "digital": "0:49:30",
+          "hours": 0,
+          "minutes": 49,
+          "name": "Linux",
+          "percent": 100,
+          "seconds": 30,
+          "text": "0 hrs 50 mins",
+          "total_seconds": 2970
+        }
+      ],
+      "projects": [
+        {
+          "digital": "0:49:30",
+          "hours": 0,
+          "minutes": 49,
+          "name": "blog",
+          "percent": 100,
+          "seconds": 30,
+          "text": "0 hrs 50 mins",
+          "total_seconds": 2970
+        }
+      ],
+      "grand_total": {
+        "digital": "0:49",
+        "hours": 0,
+        "minutes": 49,
+        "text": "0 hrs 50 mins",
+        "total_seconds": 2970
+      },
+      "range": {
+        "date": "2026-10-30T06:52:15Z",
+        "end": "2026-10-25T23:59:59+01:00",
+        "start": "2026-10-25T00:00:00+02:00",
+        "text": "",
+        "timezone": "UTC"
+      }
+    },
+    {
+      "categories": [],
+      "dependencies": [],
+      "editors": [],
+      "languages": [],
+      "machines": [],
+      "operating_systems": [],
+      "projects": [],
+      "grand_total": {
+        "digital": "0:0",
+        "hours": 0,
+        "minutes": 0,
+        "text": "0 hrs 0 mins",
+        "total_seconds": 0
+      },
+      "range": {
+        "date": "2026-10-30T06:52:15Z",
+        "end": "2026-10-26T23:59:59+01:00",
+        "start": "2026-10-26T00:00:00+01:00",
+        "text": "",
+        "timezone": "UTC"
+      }
+    },
+    {
+      "categories": [
+        {
+          "digital": "1:59:30",
+          "hours": 1,
+          "minutes": 59,
+          "name": "coding",
+          "percent": 100,
+          "seconds": 30,
+          "text": "2 hrs 0 mins",
+          "total_seconds": 7170
+        }
+      ],
+      "dependencies": [],
+      "editors": [
+        {
+          "digital": "1:59:30",
+          "hours": 1,
+          "minutes": 59,
+          "name": "Vscode",
+          "percent": 100,
+          "seconds": 30,
+          "text": "2 hrs 0 mins",
+          "total_seconds": 7170
+        }
+      ],
+      "languages": [
+        {
+          "digital": "1:59:30",
+          "hours": 1,
+          "minutes": 59,
+          "name": "Go",
+          "percent": 100,
+          "seconds": 30,
+          "text": "2 hrs 0 mins",
+          "total_seconds": 7170
+        }
+      ],
+      "machines": [
+        {
+          "digital": "1:59:30",
+          "hours": 1,
+          "minutes": 59,
+          "name": "unknown",
+          "percent": 100,
+          "seconds": 30,
+          "text": "2 hrs 0 mins",
+          "total_seconds": 7170
+        }
+      ],
+      "operating_systems": [
+        {
+          "digital": "1:59:30",
+          "hours": 1,
+          "minutes": 59,
+          "name": "Linux",
+          "percent": 100,
+          "seconds": 30,
+          "text": "2 hrs 0 mins",
+          "total_seconds": 7170
+        }
+      ],
+      "projects": [
+        {
+          "digital": "1:59:30",
+          "hours": 1,
+          "minutes": 59,
+          "name": "gladys-wakapi",
+          "percent": 100,
+          "seconds": 30,
+          "text": "2 hrs 0 mins",
+          "total_seconds": 7170
+        }
+      ],
+      "grand_total": {
+        "digital": "1:59",
+        "hours": 1,
+        "minutes": 59,
+        "text": "2 hrs 0 mins",
+        "total_seconds": 7170
+      },
+      "range": {
+        "date": "2026-10-30T06:52:15Z",
+        "end": "2026-10-27T23:59:59+01:00",
+        "start": "2026-10-27T00:00:00+01:00",
+        "text": "",
+        "timezone": "UTC"
+      }
+    },
+    {
+      "categories": [
+        {
+          "digital": "2:14:0",
+          "hours": 2,
+          "minutes": 14,
+          "name": "coding",
+          "percent": 100,
+          "seconds": 0,
+          "text": "2 hrs 14 mins",
+          "total_seconds": 8040
+        }
+      ],
+      "dependencies": [],
+      "editors": [
+        {
+          "digital": "2:14:0",
+          "hours": 2,
+          "minutes": 14,
+          "name": "Vscode",
+          "percent": 100,
+          "seconds": 0,
+          "text": "2 hrs 14 mins",
+          "total_seconds": 8040
+        }
+      ],
+      "languages": [
+        {
+          "digital": "1:34:30",
+          "hours": 1,
+          "minutes": 34,
+          "name": "Javascript",
+          "percent": 70.52,
+          "seconds": 30,
+          "text": "1 hrs 35 mins",
+          "total_seconds": 5670
+        },
+        {
+          "digital": "0:39:30",
+          "hours": 0,
+          "minutes": 39,
+          "name": "YAML",
+          "percent": 29.48,
+          "seconds": 30,
+          "text": "0 hrs 40 mins",
+          "total_seconds": 2370
+        }
+      ],
+      "machines": [
+        {
+          "digital": "2:14:0",
+          "hours": 2,
+          "minutes": 14,
+          "name": "unknown",
+          "percent": 100,
+          "seconds": 0,
+          "text": "2 hrs 14 mins",
+          "total_seconds": 8040
+        }
+      ],
+      "operating_systems": [
+        {
+          "digital": "2:14:0",
+          "hours": 2,
+          "minutes": 14,
+          "name": "Linux",
+          "percent": 100,
+          "seconds": 0,
+          "text": "2 hrs 14 mins",
+          "total_seconds": 8040
+        }
+      ],
+      "projects": [
+        {
+          "digital": "1:34:30",
+          "hours": 1,
+          "minutes": 34,
+          "name": "gladys-wakapi",
+          "percent": 70.52,
+          "seconds": 30,
+          "text": "1 hrs 35 mins",
+          "total_seconds": 5670
+        },
+        {
+          "digital": "0:39:30",
+          "hours": 0,
+          "minutes": 39,
+          "name": "home-assistant-config",
+          "percent": 29.48,
+          "seconds": 30,
+          "text": "0 hrs 40 mins",
+          "total_seconds": 2370
+        }
+      ],
+      "grand_total": {
+        "digital": "2:14",
+        "hours": 2,
+        "minutes": 14,
+        "text": "2 hrs 14 mins",
+        "total_seconds": 8040
+      },
+      "range": {
+        "date": "2026-10-30T06:52:15Z",
+        "end": "2026-10-28T23:59:59+01:00",
+        "start": "2026-10-28T00:00:00+01:00",
+        "text": "",
+        "timezone": "UTC"
+      }
+    },
+    {
+      "categories": [],
+      "dependencies": [],
+      "editors": [],
+      "languages": [],
+      "machines": [],
+      "operating_systems": [],
+      "projects": [],
+      "grand_total": {
+        "digital": "0:0",
+        "hours": 0,
+        "minutes": 0,
+        "text": "0 hrs 0 mins",
+        "total_seconds": 0
+      },
+      "range": {
+        "date": "2026-10-30T06:52:15Z",
+        "end": "2026-10-29T23:59:59+01:00",
+        "start": "2026-10-29T00:00:00+01:00",
+        "text": "",
+        "timezone": "UTC"
+      }
+    },
+    {
+      "categories": [
+        {
+          "digital": "1:39:30",
+          "hours": 1,
+          "minutes": 39,
+          "name": "coding",
+          "percent": 100,
+          "seconds": 30,
+          "text": "1 hrs 40 mins",
+          "total_seconds": 5970
+        }
+      ],
+      "dependencies": [],
+      "editors": [
+        {
+          "digital": "1:39:30",
+          "hours": 1,
+          "minutes": 39,
+          "name": "Vscode",
+          "percent": 100,
+          "seconds": 30,
+          "text": "1 hrs 40 mins",
+          "total_seconds": 5970
+        }
+      ],
+      "languages": [
+        {
+          "digital": "1:15:0",
+          "hours": 1,
+          "minutes": 15,
+          "name": "Javascript",
+          "percent": 75.38,
+          "seconds": 0,
+          "text": "1 hrs 15 mins",
+          "total_seconds": 4500
+        },
+        {
+          "digital": "0:24:30",
+          "hours": 0,
+          "minutes": 24,
+          "name": "Markdown",
+          "percent": 24.62,
+          "seconds": 30,
+          "text": "0 hrs 25 mins",
+          "total_seconds": 1470
+        }
+      ],
+      "machines": [
+        {
+          "digital": "1:39:30",
+          "hours": 1,
+          "minutes": 39,
+          "name": "unknown",
+          "percent": 100,
+          "seconds": 30,
+          "text": "1 hrs 40 mins",
+          "total_seconds": 5970
+        }
+      ],
+      "operating_systems": [
+        {
+          "digital": "1:39:30",
+          "hours": 1,
+          "minutes": 39,
+          "name": "Linux",
+          "percent": 100,
+          "seconds": 30,
+          "text": "1 hrs 40 mins",
+          "total_seconds": 5970
+        }
+      ],
+      "projects": [
+        {
+          "digital": "1:15:0",
+          "hours": 1,
+          "minutes": 15,
+          "name": "gladys-wakapi",
+          "percent": 75.38,
+          "seconds": 0,
+          "text": "1 hrs 15 mins",
+          "total_seconds": 4500
+        },
+        {
+          "digital": "0:24:30",
+          "hours": 0,
+          "minutes": 24,
+          "name": "blog",
+          "percent": 24.62,
+          "seconds": 30,
+          "text": "0 hrs 25 mins",
+          "total_seconds": 1470
+        }
+      ],
+      "grand_total": {
+        "digital": "1:39",
+        "hours": 1,
+        "minutes": 39,
+        "text": "1 hrs 40 mins",
+        "total_seconds": 5970
+      },
+      "range": {
+        "date": "2026-10-30T06:52:15Z",
+        "end": "2026-10-30T23:59:58.999999999+01:00",
+        "start": "2026-10-30T00:00:00+01:00",
+        "text": "",
+        "timezone": "UTC"
+      }
+    }
+  ],
+  "end": "2026-10-30T23:59:58.999999999+01:00",
+  "start": "2026-10-24T00:00:00+02:00",
+  "cumulative_total": {
+    "decimal": "6.71",
+    "digital": "6:42",
+    "seconds": 24150,
+    "text": "6 hrs 43 mins"
+  },
+  "daily_average": {
+    "days_including_holidays": 7,
+    "days_minus_holidays": 7,
+    "holidays": 0,
+    "seconds": 3450,
+    "seconds_including_other_language": 3450,
+    "text": "0 hrs 58 mins",
+    "text_including_other_language": "0 hrs 58 mins"
+  }
+}

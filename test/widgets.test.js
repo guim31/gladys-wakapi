@@ -1,77 +1,99 @@
+// -----------------------------------------------------------------------------
+// The `coding_time` widget: valid content within the core budget (SDK
+// validateWidgetContent), in the four languages, every optional block hidden
+// by its setting, a message before the configuration or the first answer.
+// -----------------------------------------------------------------------------
+
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { validateWidgetContent } from '@gladysassistant/integration-sdk';
-import { createFakeGladys } from '@gladysassistant/integration-sdk/testing';
-import { buildDiscoveredDevices } from '../src/devices/index.js';
-import { simulateLanSession } from '../src/devices/plug.js';
-import { DEMO_STATUS_WIDGET, WIDGETS, refreshWidgets } from '../src/widgets.js';
-import { normalizeConfig } from '../src/config.js';
+import { FakeWakapi, createWorld } from './helpers/world.js';
 
-const gladys = createFakeGladys();
-const config = normalizeConfig();
-const demoStatus = WIDGETS[DEMO_STATUS_WIDGET];
+async function content(w, options = {}) {
+  const ack = await w.fake.widgetGet('coding_time', { settings: {}, language: 'en', ...options });
+  assert.equal(ack.success, true, ack.error);
+  return ack.data.content;
+}
 
-// What the SDK passes to onWidgetGet, plus the config index.js adds.
-const getContent = (cfg = config) =>
-  demoStatus.get(gladys, { settings: {}, language: 'en', units: 'metric', config: cfg });
+function checkBudget(value) {
+  assert.deepEqual(validateWidgetContent(value), []);
+  const count = (types) => value.components.filter((c) => types.includes(c.type)).length;
+  assert.ok(value.components.length <= 8);
+  assert.ok(count(['text']) <= 2);
+  assert.ok(count(['value', 'gauge']) <= 6);
+}
 
-test('the demo_status content is rendered exactly as sent', async () => {
-  // [] = nothing the core would drop, truncate or trim to the content budget.
-  assert.deepEqual(validateWidgetContent(await getContent()), []);
-});
-
-test('the degraded plug connection content is valid too', async () => {
-  simulateLanSession(false);
-  try {
-    const content = await getContent();
-    assert.deepEqual(validateWidgetContent(content), []);
-    const status = content.components.find((component) => component.type === 'status');
-    assert.ok(
-      status.items.some((item) => item.color === 'warning'),
-      'degraded shows a warning',
+test('today, the week, the goal, 7 days and the projects, in every language', async (t) => {
+  const w = await createWorld();
+  t.after(() => w.app.stop());
+  for (const language of ['en', 'fr', 'de', 'es']) {
+    const value = await content(w, { language });
+    checkBudget(value);
+    assert.deepEqual(
+      value.components.map((c) => c.type),
+      ['value', 'value', 'gauge', 'chart', 'status'],
     );
-  } finally {
-    simulateLanSession(true);
   }
-});
-
-test('the live tiles reference features the integration publishes', async () => {
-  const featureIds = new Set(
-    buildDiscoveredDevices(gladys, config).flatMap((device) =>
-      device.features.map((feature) => feature.external_id),
-    ),
-  );
-  const liveTiles = (await getContent()).components.filter((c) => c.device_feature);
-  assert.ok(liveTiles.length > 0, 'the template demonstrates a device-bound tile');
-  for (const tile of liveTiles) {
-    assert.ok(featureIds.has(tile.device_feature), `unknown feature ${tile.device_feature}`);
-  }
-});
-
-test('every button action of the content is handled and answers a short toast', async () => {
-  const buttons = (await getContent()).components.filter((c) => c.type === 'button' && c.action);
-  assert.ok(buttons.length > 0, 'the template demonstrates a widget action');
-  for (const { action } of buttons) {
-    const message = await demoStatus.action(gladys, {
-      actionKey: action.key,
-      params: action.params ?? {},
-      settings: {},
-      config,
-    });
-    assert.ok(message.en, 'the toast carries at least the mandatory `en` text');
-    assert.ok(message.en.length <= 200, 'toasts are capped at 200 characters');
-  }
-});
-
-test('an unknown widget action fails, so the user sees the error', async () => {
-  await assert.rejects(
-    demoStatus.action(gladys, { actionKey: 'unknown', params: {}, settings: {}, config }),
-    /Unknown widget action/,
+  const value = await content(w);
+  assert.equal(value.components[0].value, '1 h 40');
+  assert.equal(value.components[1].value, '5 h 53');
+  assert.equal(value.components[2].value, 83);
+  assert.equal(value.components[3].series[0].points.length, 7);
+  assert.deepEqual(value.components[3].series[0].points.at(-1), {
+    t: '2026-10-30T12:00:00.000Z',
+    v: 100,
+  });
+  assert.deepEqual(
+    value.components[4].items.map((item) => [item.label, item.value]),
+    [
+      ['gladys-wakapi', '1 h 15 min'],
+      ['blog', '25 min'],
+    ],
   );
 });
 
-test('refreshWidgets nudges every widget', () => {
-  const fresh = createFakeGladys();
-  refreshWidgets(fresh);
-  assert.deepEqual(fresh.fake.widgetRefreshes, Object.keys(WIDGETS));
+test('each optional block has a setting to hide it', async (t) => {
+  const w = await createWorld();
+  t.after(() => w.app.stop());
+  const value = await content(w, {
+    settings: { show_week: false, show_goal: false, show_chart: false, show_projects: false },
+  });
+  checkBudget(value);
+  assert.deepEqual(
+    value.components.map((c) => c.type),
+    ['value'],
+  );
+});
+
+test('nothing coded yet, the server lost, not configured', async (t) => {
+  const server = new FakeWakapi();
+  server.days.delete('2026-10-30');
+  const w = await createWorld({ server });
+  t.after(() => w.app.stop());
+  let value = await content(w);
+  checkBudget(value);
+  assert.equal(value.components.at(-1).text, 'No coding yet today.');
+  server.online = false;
+  await w.hub.poll();
+  value = await content(w);
+  checkBudget(value);
+  assert.equal(value.components[0].variant, 'caption');
+
+  const empty = await createWorld({ config: {} });
+  t.after(() => empty.app.stop());
+  value = await content(empty, { language: 'fr' });
+  checkBudget(value);
+  assert.match(value.components[0].text, /Saisissez l'adresse/);
+});
+
+test('the server lost since yesterday: today shows zero, not yesterday', async (t) => {
+  const w = await createWorld();
+  t.after(() => w.app.stop());
+  w.server.online = false;
+  w.clock.time = Date.UTC(2026, 9, 30, 23, 30);
+  await w.hub.poll();
+  const value = await content(w);
+  checkBudget(value);
+  assert.equal(value.components[0].variant, 'caption');
+  assert.equal(value.components[1].value, '0 min');
 });

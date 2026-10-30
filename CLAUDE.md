@@ -16,8 +16,8 @@ its only runtime dependency. It started from the official JavaScript template.
 ```bash
 npm install
 npm test                                  # node --test, the built-in runner
-node --test test/devices.test.js          # one file
-node --test --test-name-pattern "plug"    # tests whose name matches
+node --test test/hub.test.js              # one file
+node --test --test-name-pattern "widget"  # tests whose name matches
 npm run lint                              # ESLint
 npm run format:check                      # Prettier, as the CI runs it
 npm run format                            # Prettier, fix in place
@@ -32,15 +32,21 @@ pushing.
 
 ```
 index.js                          SDK wiring only: handlers registered before connect()
-src/devices/index.js              registry of the device blueprints + dispatch helpers
-src/devices/<type>.js             one device type per file (buildDevice, onPoll, onSetValue...)
+src/app.js                        registers every SDK handler on the hub (shared with the tests)
+src/hub.js                        reading timer, states, scene events, scene action, test action
+src/devices.js                    the "Wakapi <name>" device and its five features
+src/wakapi/client.js              WakaTime API client (Wakapi compat or WakaTime), errors by kind
+src/wakapi/http.js                the one function that talks to the network (node:http/https)
+src/wakapi/model.js               days of a reading (time zone of Gladys), parsing, summary
 src/scenes.js                     scene action handlers (manifest `scene_actions`)
-src/widgets.js                    dashboard widget handlers (manifest `widgets`)
+src/widgets.js                    dashboard widget handler (manifest `widgets`)
+src/texts.js                      every text sent outside the widget, in four languages
+src/store.js                      /data/wakapi-state.json (day, events already sent)
 src/config.js                     DEFAULT_CONFIG (mirrors the manifest defaults) + normalization
-src/weather.js                    example driver (Open-Meteo)
 gladys-assistant-integration.json manifest: name, config_schema, actions, image...
-docs/en.md, docs/fr.md            user documentation, re-hosted by Gladys (mandatory)
-test/                             node --test, against the SDK's fake Gladys (integration-sdk/testing)
+docs/{en,fr,de,es}.md             user documentation, re-hosted by Gladys (en and fr mandatory)
+test/                             node --test, against the SDK's fake Gladys and a fake Wakapi
+test/fixtures/wakapi/             real answers of the official Wakapi image
 .github/scripts/release.mjs       release helpers (manifest bump, changelog), tested in test/
 ```
 
@@ -70,8 +76,10 @@ test/                             node --test, against the SDK's fake Gladys (in
   `type: "provider"`: 5.1.0). `test/manifest.test.js` ties the manifest to the
   code (defaults, action, scene and widget handlers): change both sides
   together.
-- **User-facing text** is bilingual (English and French): action messages,
-  manifest texts, and `docs/en.md` / `docs/fr.md`, kept in sync.
+- **User-facing text** is in four languages (English, French, German with
+  "du", Spanish with "usted"): action messages, widget texts, manifest texts,
+  feature names, and `docs/{en,fr,de,es}.md`, kept in sync
+  (`test/i18n.test.js`).
 - **Style.** Prettier formats, ESLint catches mistakes. Comments explain why,
   in English. Tests never touch the network.
 
@@ -251,3 +259,24 @@ long, et sur un « Sie »/« Ihr… » de politesse en allemand. Le store exige 
 - Docs `en`, `fr`, `de`, `es` avec les mêmes sections.
 - Chauffe, ouverture, sécurité : ne rien rendre pilotable « comme un thermostat » ou par un assistant
   vocal quand une erreur serait dangereuse (leçon d'OctoPrint).
+
+## Wakapi (API compatible WakaTime, vérifié sur l'image officielle, 30/10/2026)
+
+- Instance de test : `ghcr.io/muety/wakapi` sans volume ni port publié, `WAKAPI_PASSWORD_SALT`
+  quelconque ; compte par `POST /signup` (formulaire : username, email, password,
+  password_repeat, location), clé d'API lue sur `/settings` après `POST /login`. Données par
+  `POST /api/heartbeats` (tableau de battements, Basic base64(clé)) : deux battements à moins de
+  2 min l'un de l'autre font une durée.
+- API sous `/api/compat/wakatime/v1`, WakaTime sous `https://api.wakatime.com/api/v1` : mêmes
+  chemins, même `Authorization: Basic base64(clé)`. Une clé refusée donne **401 en texte brut**
+  (`401 unauthorized`), un mauvais chemin **404 en texte brut**.
+- `status_bar/today` n'existe pas chez Wakapi (c'est `statusbar/today`) : on lit
+  `users/current/summaries?start=<date>&end=<date>` (une entrée par jour, dans l'ordre), qui
+  sert aux deux services. Wakapi compte les jours dans le fuseau **du compte** et ignore
+  `timezone` ; WakaTime l'honore. `range.date` de Wakapi vaut l'heure de la requête et
+  `range.start` de WakaTime est en UTC : on se fie à l'ordre des entrées, pas à leurs dates.
+- Le `daily_average` de Wakapi divise par tous les jours de la plage ; WakaTime exclut les jours
+  sans code. L'intégration calcule elle-même la moyenne sur les jours codés.
+- Wakapi écrit les langages comme il les reçoit de l'extension (« Javascript ») : afficher tel quel.
+- Le cœur refuse un état `text/text` passé en `state` (400 « must have a numeric state or a string
+  text ») : `featureStates` envoie `{ text }` pour ces fonctionnalités.
