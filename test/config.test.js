@@ -19,6 +19,10 @@ test('the addresses users type', () => {
     api('https://example.org/wakapi/api/compat/wakatime/v1/'),
     'https://example.org/wakapi/api/compat/wakatime/v1',
   );
+  assert.equal(
+    api('https://example.org/projects/wakapi'),
+    'https://example.org/projects/wakapi/api/compat/wakatime/v1',
+  );
   assert.equal(api('wakapi.dev'), 'https://wakapi.dev/api/compat/wakatime/v1');
   for (const raw of ['wakatime.com', 'https://wakatime.com/dashboard', 'api.wakatime.com']) {
     assert.deepEqual(parseServerUrl(raw), {

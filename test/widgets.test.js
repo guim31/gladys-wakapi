@@ -85,3 +85,15 @@ test('nothing coded yet, the server lost, not configured', async (t) => {
   checkBudget(value);
   assert.match(value.components[0].text, /Saisissez l'adresse/);
 });
+
+test('the server lost since yesterday: today shows zero, not yesterday', async (t) => {
+  const w = await createWorld();
+  t.after(() => w.app.stop());
+  w.server.online = false;
+  w.clock.time = Date.UTC(2026, 9, 30, 23, 30);
+  await w.hub.poll();
+  const value = await content(w);
+  checkBudget(value);
+  assert.equal(value.components[0].variant, 'caption');
+  assert.equal(value.components[1].value, '0 min');
+});

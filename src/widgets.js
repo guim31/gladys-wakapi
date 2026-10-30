@@ -14,7 +14,7 @@
 import { WIDGET_COLORS } from '@gladysassistant/integration-sdk';
 import { WIDGET_KEY } from './hub.js';
 import { CONNECTION_TEXT, formatDuration, formatShort, pick } from './texts.js';
-import { minutes } from './wakapi/model.js';
+import { localDate, minutes } from './wakapi/model.js';
 
 const MAX_PROJECTS = 5;
 
@@ -73,7 +73,10 @@ async function get(hub, { settings = {}, language = 'en' }) {
   if (!hub.summary) {
     return message(TEXT.noAnswer, language);
   }
-  const { today, weekSeconds, days } = hub.summary;
+  const { weekSeconds, days } = hub.summary;
+  // The server stopped answering before midnight: yesterday is not "today".
+  const fresh = hub.reading?.today === localDate(hub.now(), hub.timeZone);
+  const today = fresh ? hub.summary.today : { seconds: 0, projects: [] };
   const goalSeconds = hub.config.goalMinutes * 60;
   const reached = today.seconds >= goalSeconds;
   const components = [];

@@ -149,24 +149,28 @@ export const TODAY_TEXT = {
     nothing: (goal) => `No coding yet today (goal ${goal}).`,
     today: (time, goal, project, language) =>
       `${time} of coding today (goal ${goal}), mostly on ${project} in ${language}.`,
+    todayBare: (time, goal) => `${time} of coding today (goal ${goal}).`,
     week: (time) => ` This week: ${time}.`,
   },
   fr: {
     nothing: (goal) => `Pas encore de code aujourd'hui (objectif ${goal}).`,
     today: (time, goal, project, language) =>
       `${time} de code aujourd'hui (objectif ${goal}), surtout sur ${project} en ${language}.`,
+    todayBare: (time, goal) => `${time} de code aujourd'hui (objectif ${goal}).`,
     week: (time) => ` Cette semaine : ${time}.`,
   },
   de: {
     nothing: (goal) => `Heute noch keine Programmierzeit (Ziel ${goal}).`,
     today: (time, goal, project, language) =>
       `Heute ${time} Programmierzeit (Ziel ${goal}), vor allem an ${project} in ${language}.`,
+    todayBare: (time, goal) => `Heute ${time} Programmierzeit (Ziel ${goal}).`,
     week: (time) => ` Diese Woche: ${time}.`,
   },
   es: {
     nothing: (goal) => `Todavía no hay código hoy (objetivo ${goal}).`,
     today: (time, goal, project, language) =>
       `${time} de código hoy (objetivo ${goal}), sobre todo en ${project} con ${language}.`,
+    todayBare: (time, goal) => `${time} de código hoy (objetivo ${goal}).`,
     week: (time) => ` Esta semana: ${time}.`,
   },
 };

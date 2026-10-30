@@ -248,3 +248,54 @@ test('a reconnection of Gladys sends everything again', async (t) => {
   assert.ok(w.fake.states.length > before);
   assert.ok(DAY_MS > 0);
 });
+
+test('failed readings back off from 1 minute to the interval', async (t) => {
+  const server = new FakeWakapi();
+  server.online = false;
+  const w = await world(t, { server, config: { ...BASE_CONFIG, poll_interval: '600' } });
+  const delays = [w.hub.nextDelay()];
+  for (let i = 0; i < 4; i += 1) {
+    await w.hub.poll();
+    delays.push(w.hub.nextDelay());
+  }
+  assert.deepEqual(delays, [60_000, 120_000, 240_000, 480_000, 600_000]);
+  server.online = true;
+  await w.hub.poll();
+  assert.equal(w.hub.failures, 0);
+});
+
+test('a scene action in a loop reuses a reading of the last 30 seconds', async (t) => {
+  const w = await world(t);
+  const reads = () => w.server.requests.filter((r) => r.path.endsWith('/summaries')).length;
+  const before = reads();
+  await w.fake.sceneAction('read_today', {});
+  await w.fake.sceneAction('read_today', {});
+  assert.equal(reads(), before);
+  w.clock.advance(31_000);
+  await w.fake.sceneAction('read_today', {});
+  assert.equal(reads(), before + 1);
+});
+
+test('the sentence without a project or a language', async (t) => {
+  const server = new FakeWakapi();
+  server.days.get(TODAY).projects = [];
+  const w = await world(t, { server });
+  const ack = await w.fake.sceneAction('read_today', {});
+  assert.equal(
+    ack.data.outputs.text,
+    '1 h 40 min of coding today (goal 2 h). This week: 5 h 53 min.',
+  );
+});
+
+test('another server or key: its first failure is logged again', async (t) => {
+  const server = new FakeWakapi();
+  server.online = false;
+  const w = await world(t, { server });
+  assert.ok(w.hub.warned.has('read'));
+  await w.fake.configUpdated({ ...BASE_CONFIG, api_key: 'other' });
+  assert.equal(w.hub.error.kind, 'network');
+  assert.ok(w.hub.warned.has('read'), 'flagged again by the new failure, after a reset');
+  server.online = true;
+  await w.fake.configUpdated(BASE_CONFIG);
+  assert.ok(!w.hub.warned.has('read'));
+});

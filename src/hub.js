@@ -44,6 +44,8 @@ export const TRIGGERS = Object.freeze({
 });
 
 const HOUR_MS = 60 * 60_000;
+// A scene action reuses a reading this recent.
+const REUSE_READING_MS = 30_000;
 
 export const HUB_TIMINGS = {
   // A failed read is tried again this soon (or when a 429 says).
@@ -104,8 +106,11 @@ export class WakapiHub {
     this.reading = null;
     this.error = null;
     this.downSince = null;
+    this.failures = 0;
     this.readAt = 0;
     this.connectedLogged = false;
+    // Another server or key: its first failure is news again.
+    this.warned?.delete('read');
   }
 
   // --- Logs ------------------------------------------------------------------
@@ -203,8 +208,9 @@ export class WakapiHub {
       if (SLOW_RETRY.has(this.error.kind)) {
         return interval;
       }
-      const wait = this.error.retryAfterMs ?? 0;
-      return Math.max(Math.min(interval, this.timings.retryMs), wait);
+      // 1, 2, 4… minutes, up to the interval, or what a 429 asks.
+      const backoff = this.timings.retryMs * 2 ** Math.min(10, this.failures - 1);
+      return Math.max(Math.min(interval, backoff), this.error.retryAfterMs ?? 0);
     }
     const midnight = msUntilNextDay(this.now(), this.timeZone) + this.timings.wakeSlackMs;
     return Math.max(this.timings.minDelayMs, Math.min(interval, midnight));
@@ -278,9 +284,11 @@ export class WakapiHub {
     }
     this.error = null;
     this.downSince = null;
+    this.failures = 0;
   }
 
   failed(err, now) {
+    this.failures += 1;
     const kind = err instanceof WakapiError ? err.kind : ERROR_KINDS.NETWORK;
     this.error = { kind, message: err.message, retryAfterMs: err.retryAfterMs };
     this.downSince ??= now;
@@ -472,12 +480,17 @@ export class WakapiHub {
 
   // --- Commands --------------------------------------------------------------
 
-  /** Read now, and fail with the reason in the user's words. */
+  /**
+   * Read now (or reuse a reading of the last seconds: a scene run in a loop
+   * must not hammer the server), and fail with the reason in the user's words.
+   */
   async readNow() {
     if (!this.client) {
       throw new Error(pick(this.connectionStatus().message, this.language));
     }
-    await this.poll();
+    if (this.error || !this.summary || this.now() - this.readAt >= REUSE_READING_MS) {
+      await this.poll();
+    }
     if (this.error) {
       throw new Error(pick(ERROR_TEXT[this.error.kind], this.language));
     }
@@ -498,7 +511,9 @@ export class WakapiHub {
     const text =
       (today.seconds === 0
         ? texts.nothing(goal)
-        : texts.today(formatDuration(today.seconds), goal, project || '?', language || '?')) +
+        : project && language
+          ? texts.today(formatDuration(today.seconds), goal, project, language)
+          : texts.todayBare(formatDuration(today.seconds), goal)) +
       texts.week(formatDuration(weekSeconds));
     return {
       text: text.slice(0, 1000),

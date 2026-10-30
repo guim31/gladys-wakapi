@@ -26,9 +26,10 @@ export const DEFAULT_CONFIG = {
 };
 
 const WAKATIME_HOST = /^((www|api)\.)?wakatime\.com$/i;
-// Screens of the Wakapi web app, dropped from an address copied from the browser.
+// A screen of the Wakapi web app ending an address copied from the browser
+// (only as the last segment: a proxy prefix may share a name).
 const WAKAPI_SCREENS =
-  /\/(summary|settings|login|signup|leaderboard|projects|imprint|subscription|reset-password|set-password)(\/.*)?$/;
+  /\/(summary|settings|login|signup|leaderboard|projects|imprint|subscription|reset-password|set-password)\/?$/;
 
 /**
  * Parse the address typed by the user: a bare host or IP (`192.0.2.10:3000`),
